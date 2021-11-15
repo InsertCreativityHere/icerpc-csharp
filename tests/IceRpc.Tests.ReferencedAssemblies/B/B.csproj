@@ -8,9 +8,9 @@
 
   <ItemDefinitionGroup>
     <SliceCompile>
-        <IncludeDirectories>../A</IncludeDirectories>
+      <ReferencedFiles>../A</ReferencedFiles>
     </SliceCompile>
-</ItemDefinitionGroup>
+  </ItemDefinitionGroup>
 
   <ItemGroup>
     <Compile Update="generated\Bcs">

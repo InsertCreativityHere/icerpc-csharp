@@ -8,9 +8,9 @@
 
   <ItemDefinitionGroup>
     <SliceCompile>
-        <IncludeDirectories>../A;../B;../C</IncludeDirectories>
+      <ReferencedFiles>../A;../B;../C</ReferencedFiles>
     </SliceCompile>
-</ItemDefinitionGroup>
+  </ItemDefinitionGroup>
 
   <ItemGroup>
     <Compile Update="generated\D.cs">
