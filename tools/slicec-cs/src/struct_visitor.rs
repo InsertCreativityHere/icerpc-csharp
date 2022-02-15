@@ -38,20 +38,20 @@ impl<'a> Visitor for StructVisitor<'a> {
                 .add_base("IceRpc.Slice.ITrait".to_owned());
 
             builder.add_block(
-                format!(
-                    "public static readonly string SliceTypeId = typeof({}).GetSliceTypeId()!;",
-                    &escaped_identifier
-                )
-                .into(),
-            );
-
-            builder.add_block(
                 members
                     .iter()
                     .map(|m| data_member_declaration(m, FieldType::NonMangled))
                     .collect::<Vec<_>>()
                     .join("\n")
                     .into(),
+            );
+
+            builder.add_block(
+                format!(
+                    "public static readonly string SliceTypeId = typeof({}).GetSliceTypeId()!;",
+                    &escaped_identifier
+                )
+                .into(),
             );
 
             let mut main_constructor = FunctionBuilder::new(
