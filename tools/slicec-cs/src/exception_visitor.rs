@@ -59,7 +59,7 @@ impl<'a> Visitor for ExceptionVisitor<'_> {
 
         exception_class_builder.add_block(
             format!(
-                "private static readonly string _sliceTypeId = typeof({}).GetSliceTypeId()!;",
+                "public static readonly string SliceTypeId = typeof({}).GetSliceTypeId()!;",
                 exception_name
             )
             .into(),
@@ -157,7 +157,7 @@ else
                         "\
 if (encoder.Encoding == IceRpc.Encoding.Slice11)
 {{
-    encoder.StartSlice(_sliceTypeId);
+    encoder.StartSlice(SliceTypeId);
     {encode_data_members}
     encoder.EndSlice(lastSlice: false);
     base.EncodeCore(ref encoder);
@@ -175,13 +175,13 @@ else
                         "\
 if (encoder.Encoding == IceRpc.Encoding.Slice11)
 {{
-    encoder.StartSlice(_sliceTypeId);
+    encoder.StartSlice(SliceTypeId);
     {encode_data_members}
     encoder.EndSlice(lastSlice: true);
 }}
 else
 {{
-    encoder.EncodeString(_sliceTypeId);
+    encoder.EncodeString(SliceTypeId);
     encoder.EncodeString(Message);
     Origin.Encode(ref encoder);
     {encode_data_members}
