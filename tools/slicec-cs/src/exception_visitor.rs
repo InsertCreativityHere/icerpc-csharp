@@ -167,7 +167,7 @@ else
     base.EncodeCore(ref encoder);
 }}",
                         encode_data_members =
-                            &encode_data_members(&members, namespace, FieldType::Exception,)
+                            &encode_data_members(&members, namespace, FieldType::Exception).indent()
                     );
                 } else {
                     writeln!(
@@ -187,7 +187,7 @@ else
     {encode_data_members}
 }}",
                         encode_data_members =
-                            &encode_data_members(&members, namespace, FieldType::Exception,)
+                            &encode_data_members(&members, namespace, FieldType::Exception).indent()
                     );
                 }
 

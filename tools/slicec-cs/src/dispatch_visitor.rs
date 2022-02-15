@@ -292,7 +292,7 @@ return {args_and_stream};",
                 args = non_streamed_parameters.to_argument_tuple("sliceP_"),
                 decode_func = request_decode_func(operation).indent(),
                 decode_request_stream =
-                    decode_operation_stream(stream_member, namespace, true, true,),
+                    decode_operation_stream(stream_member, namespace, true, true),
                 args_and_stream = operation.parameters().to_argument_tuple("sliceP_")
             );
         }
