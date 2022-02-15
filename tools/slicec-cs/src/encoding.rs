@@ -127,6 +127,13 @@ fn encode_type(
                         )
                     }
                 }
+                TypeRefs::Exception(_) => {
+                    format!(
+                        "{encoder_param}.EncodeException({param});",
+                        encoder_param = encoder_param,
+                        param = param
+                    )
+                }
                 TypeRefs::Trait(_) => format!(
                     "{param}.EncodeTrait(ref {encoder_param});",
                     param = param,
@@ -241,6 +248,9 @@ fn encode_tagged_type(
         }
         Types::Struct(struct_def) if struct_def.is_fixed_size() => {
             (Some(struct_def.min_wire_size().to_string()), None)
+        }
+        Types::Exception(exception_def) if exception_def.is_fixed_size() => {
+            (Some(exception_def.min_wire_size().to_string()), None)
         }
         Types::Enum(enum_def) => {
             if let Some(underlying) = &enum_def.underlying {
@@ -502,6 +512,13 @@ pub fn encode_action(type_ref: &TypeRef, type_context: TypeContext, namespace: &
                 "(ref SliceEncoder encoder, {value_type} value) => {value}.Encode(ref encoder)",
                 value_type = value_type,
                 value = value
+            )
+        }
+        TypeRefs::Exception(_) => {
+            write!(
+                code,
+                "(ref SliceEncoder encoder, {value_type} value) => encoder.EncodeException(value)",
+                value_type = value_type,
             )
         }
         TypeRefs::Trait(_) => {
