@@ -59,7 +59,8 @@ impl<'a> Visitor for ExceptionVisitor<'_> {
 
         exception_class_builder.add_block(
             format!(
-                "public static readonly string SliceTypeId = typeof({}).GetSliceTypeId()!;",
+                "public static{} readonly string SliceTypeId = typeof({}).GetSliceTypeId()!;",
+                if exception_def.base_exception().is_some() { " new" } else { "" },
                 exception_name
             )
             .into(),
