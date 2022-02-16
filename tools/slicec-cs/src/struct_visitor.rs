@@ -24,8 +24,9 @@ impl<'a> Visitor for StructVisitor<'a> {
         // If the compact struct is using cs:type attribute we don't generate any code
         if !struct_def.has_attribute("cs:type", false) {
             let escaped_identifier = struct_def.escape_identifier();
-            let members = struct_def.members();
             let namespace = struct_def.namespace();
+            let members = struct_def.members();
+            let access = struct_def.access_modifier();
 
             let mut builder = ContainerBuilder::new(
                 &format!("{} partial record struct", struct_def.modifiers()),
@@ -55,7 +56,7 @@ impl<'a> Visitor for StructVisitor<'a> {
             );
 
             let mut main_constructor = FunctionBuilder::new(
-                &struct_def.access_modifier(),
+                &access,
                 "",
                 &escaped_identifier,
                 FunctionType::BlockBody,
@@ -99,7 +100,7 @@ impl<'a> Visitor for StructVisitor<'a> {
             }
             builder.add_block(
                 FunctionBuilder::new(
-                    &struct_def.access_modifier(),
+                    &access,
                     "",
                     &escaped_identifier,
                     FunctionType::BlockBody,
@@ -123,7 +124,7 @@ impl<'a> Visitor for StructVisitor<'a> {
             }
             builder.add_block(
                 FunctionBuilder::new(
-                    &(struct_def.access_modifier() + " readonly"),
+                    &(access + " readonly"),
                     "void",
                     "Encode",
                     FunctionType::BlockBody,

@@ -23,19 +23,19 @@ impl<'a> Visitor for ExceptionVisitor<'_> {
     fn visit_exception_start(&mut self, exception_def: &Exception) {
         let exception_name = exception_def.escape_identifier();
         let has_base = exception_def.base.is_some();
-
         let namespace = &exception_def.namespace();
-
         let members = exception_def.members();
+        let access = exception_def.access_modifier();
 
         let has_public_parameter_constructor = exception_def
             .all_members()
             .iter()
             .all(|m| m.is_default_initialized());
-        let access = exception_def.access_modifier();
 
-        let mut exception_class_builder =
-            ContainerBuilder::new(&format!("{} partial class", access), &exception_name);
+        let mut exception_class_builder = ContainerBuilder::new(
+            &format!("{} partial class", access),
+            &exception_name,
+        );
 
         exception_class_builder
             .add_comment("summary", &doc_comment_message(exception_def))
@@ -186,6 +186,7 @@ else
     encoder.EncodeString(Message);
     Origin.Encode(ref encoder);
     {encode_data_members}
+    encoder.EncodeVarInt(Slice20Definitions.TagEndMarker);
 }}",
                         encode_data_members =
                             &encode_data_members(&members, namespace, FieldType::Exception).indent()
