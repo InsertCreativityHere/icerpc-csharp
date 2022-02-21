@@ -7,7 +7,6 @@ namespace IceRpc.Tests.Slice
 {
     [Timeout(30000)]
     [Parallelizable(ParallelScope.All)]
-    [TestFixture("ice")]
     [TestFixture("icerpc")]
     public sealed class ExceptionTests
     {
@@ -53,7 +52,20 @@ namespace IceRpc.Tests.Slice
         }
 
         [Test]
-        public void Exception_Operations()
+        public async Task Exception_Member_Operations()
+        {
+            // Passing exceptions as a data member is not supported with the 1.1 encoding.
+            if (_prx.Proxy.Encoding == Encoding.Slice11)
+            {
+                return;
+            }
+
+            MyExceptionA a = await _prx.OpMyExceptionAAsync(new MyExceptionA(-79));
+            Assert.That(a, Is.EqualTo(new MyExceptionA(-79)));
+        }
+
+        [Test]
+        public void Exception_Throw_Operations()
         {
             MyExceptionA? a = Assert.ThrowsAsync<MyExceptionA>(async () => await _prx.ThrowAAsync(10));
             Assert.That(a, Is.Not.Null);
@@ -79,6 +91,11 @@ namespace IceRpc.Tests.Slice
 
         public class ExceptionOperations : Service, IExceptionOperations
         {
+            public ValueTask<MyExceptionA> OpMyExceptionAAsync(
+                MyExceptionA p1,
+                Dispatch dispatch,
+                CancellationToken cancel) => new(p1);
+
             public ValueTask ThrowAAsync(int a, Dispatch dispatch, CancellationToken cancel) => throw new MyExceptionA(a);
             public ValueTask ThrowAorBAsync(int a, Dispatch dispatch, CancellationToken cancel)
             {

@@ -14,6 +14,8 @@ exception MyExceptionB
 
 interface ExceptionOperations
 {
+    opMyExceptionA(p1: MyExceptionA) -> MyExceptionA;
+
     throwA(a: int);
     throwAorB(a: int);
     throwRemoteException();

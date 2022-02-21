@@ -5,7 +5,7 @@ using System.Buffers;
 namespace IceRpc.Slice.Internal
 {
     /// <summary>Implements a buffer writer over a single Memory{byte}.</summary>
-    internal class SingleBufferWriter : IBufferWriter<byte>
+    public class SingleBufferWriter : IBufferWriter<byte>
     {
         private Memory<byte> _available;
 
@@ -14,7 +14,7 @@ namespace IceRpc.Slice.Internal
         private int _written;
 
         /// <summary>Returns the written portion of the underlying buffer.</summary>
-        internal Memory<byte> WrittenBuffer => _initialBuffer[0.._written];
+        public Memory<byte> WrittenBuffer => _initialBuffer[0.._written];
 
         /// <inheritdoc/>
         public Memory<byte> GetMemory(int sizeHint)
@@ -40,7 +40,7 @@ namespace IceRpc.Slice.Internal
 
         /// <summary>Constructs a new single buffer writer over a buffer.</summary>
         /// <param name="buffer">The underlying buffer.</param>
-        internal SingleBufferWriter(Memory<byte> buffer)
+        public SingleBufferWriter(Memory<byte> buffer)
         {
             _initialBuffer = buffer;
             _available = _initialBuffer;
