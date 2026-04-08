@@ -162,7 +162,11 @@ fn encode_tagged_type(
     let read_only_memory = matches!(
         data_type.concrete_type(),
         Types::Sequence(sequence_def) if sequence_def.has_fixed_size_primitive_elements()
+<<<<<<< Updated upstream
             && type_context == TypeContext::OutgoingParam
+=======
+            && type_context == TypeContext::Encode
+>>>>>>> Stashed changes
             && !data_type.has_attribute::<CsType>()
     );
 
@@ -279,7 +283,11 @@ fn encode_sequence(
     encoding: Encoding,
 ) -> CodeBlock {
     if sequence_ref.has_fixed_size_primitive_elements() && !sequence_ref.has_attribute::<CsType>() {
+<<<<<<< Updated upstream
         if type_context == TypeContext::OutgoingParam {
+=======
+        if type_context == TypeContext::Encode {
+>>>>>>> Stashed changes
             format!("{encoder_param}.EncodeSpan({value}.Span)")
         } else {
             format!("{encoder_param}.EncodeSequence({value})")

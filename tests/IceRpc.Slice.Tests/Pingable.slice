@@ -1,0 +1,13 @@
+// Copyright (c) ZeroC, Inc.
+
+mode = Slice1
+
+module IceRpc::Slice::Tests
+
+// A simple interface reused by several tests.
+interface Pingable {
+    ping()
+}
+
+[cs::type("IceRpc.Slice.Tests.PingableProxy")]
+custom PingableProxy

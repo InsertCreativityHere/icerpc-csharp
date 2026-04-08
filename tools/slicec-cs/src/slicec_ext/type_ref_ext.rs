@@ -1,6 +1,10 @@
 // Copyright (c) ZeroC, Inc.
 
+<<<<<<< Updated upstream
 use super::{EntityExt, EnumExt, PrimitiveExt};
+=======
+use super::{EntityExt, PrimitiveExt};
+>>>>>>> Stashed changes
 use crate::cs_attributes::CsType;
 use slicec::grammar::*;
 
@@ -17,8 +21,12 @@ impl<T: Type + ?Sized> TypeRefExt for TypeRef<T> {
     fn is_value_type(&self) -> bool {
         match self.concrete_type() {
             Types::Primitive(primitive) => !matches!(primitive, Primitive::String | Primitive::AnyClass),
+<<<<<<< Updated upstream
             Types::Struct(_) => true,
             Types::Enum(enum_ref) => enum_ref.is_mapped_to_cs_enum(),
+=======
+            Types::Enum(_) | Types::Struct(_) => true,
+>>>>>>> Stashed changes
             _ => false,
         }
     }
@@ -29,17 +37,21 @@ impl<T: Type + ?Sized> TypeRefExt for TypeRef<T> {
             TypeRefs::Struct(struct_ref) => struct_ref.escape_scoped_identifier(namespace),
             TypeRefs::Class(class_ref) => class_ref.escape_scoped_identifier(namespace),
             TypeRefs::Enum(enum_ref) => enum_ref.escape_scoped_identifier(namespace),
+<<<<<<< Updated upstream
             TypeRefs::ResultType(result_type_ref) => {
                 let success_type = result_type_ref.success_type.field_type_string(namespace);
                 let failure_type = result_type_ref.failure_type.field_type_string(namespace);
                 format!("Result<{success_type}, {failure_type}>")
             }
+=======
+>>>>>>> Stashed changes
             TypeRefs::CustomType(custom_type_ref) => {
                 let attribute = custom_type_ref.definition().find_attribute::<CsType>();
                 let attribute = attribute.expect("called 'type_string' on custom type with no 'cs::type' attribute!");
                 attribute.type_string.clone()
             }
             TypeRefs::Sequence(sequence_ref) => {
+<<<<<<< Updated upstream
                 let element_type = sequence_ref.element_type.field_type_string(namespace);
                 format!("global::System.Collections.Generic.IList<{element_type}>")
             }
@@ -47,6 +59,17 @@ impl<T: Type + ?Sized> TypeRefExt for TypeRef<T> {
                 let key_type = dictionary_ref.key_type.field_type_string(namespace);
                 let value_type = dictionary_ref.value_type.field_type_string(namespace);
                 format!("global::System.Collections.Generic.IDictionary<{key_type}, {value_type}>")
+=======
+                // For readonly sequences of fixed size numeric elements the mapping is the
+                // same for optional an non optional types.
+                if context == TypeContext::Encode
+                    && sequence_ref.has_fixed_size_primitive_elements()
+                    && !self.has_attribute::<CsType>()
+                {
+                    ignore_optional = true;
+                }
+                sequence_type_to_string(sequence_ref, namespace, context)
+>>>>>>> Stashed changes
             }
         };
 
@@ -76,6 +99,7 @@ impl<T: Type + ?Sized> TypeRefExt for TypeRef<T> {
         set_optional_modifier_for(type_string, self.is_optional)
     }
 
+<<<<<<< Updated upstream
     fn outgoing_parameter_type_string(&self, namespace: &str) -> String {
         let mut ignore_optional = false;
         let type_string = match &self.concrete_typeref() {
@@ -90,6 +114,22 @@ impl<T: Type + ?Sized> TypeRefExt for TypeRef<T> {
                 } else {
                     format!("global::System.Collections.Generic.IEnumerable<{element_type}>")
                 }
+=======
+    match context {
+        TypeContext::Field | TypeContext::Nested => {
+            format!("global::System.Collections.Generic.IList<{element_type}>")
+        }
+        TypeContext::Decode => match cs_type_attribute {
+            Some(arg) => arg.type_string.clone(),
+            None => format!("{element_type}[]"),
+        },
+        TypeContext::Encode => {
+            // If the underlying type is of fixed size, we map to `ReadOnlyMemory` instead.
+            if sequence_ref.has_fixed_size_primitive_elements() && cs_type_attribute.is_none() {
+                format!("global::System.ReadOnlyMemory<{element_type}>")
+            } else {
+                format!("global::System.Collections.Generic.IEnumerable<{element_type}>")
+>>>>>>> Stashed changes
             }
             TypeRefs::Dictionary(dictionary_ref) => {
                 let key_type = dictionary_ref.key_type.field_type_string(namespace);
